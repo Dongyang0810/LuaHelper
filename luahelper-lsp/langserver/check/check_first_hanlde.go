@@ -194,7 +194,13 @@ func (a *AllProject) firstCreateAndTraverseAst(filesList []string, saveContentFl
 
 	for i := 0; i < corNum; i++ {
 		chs[i] = make(chan FirstWorkChan)
-		selectCase[i].Dir = reflect.SelectRecv
+		//下面两行设置reflect.select调用时select的目的
+		selectCase[i].Dir = reflect.SelectRecv //设置信道是接收,可以为下面值之一
+		/*
+			SelectSend    SelectDir // case Chan <- Send
+			SelectRecv              // case <-Chan:
+			SelectDefault           // default
+		*/
 		selectCase[i].Chan = reflect.ValueOf(chs[i])
 		go GoRoutineFirstWork(chs[i])
 	}
@@ -221,10 +227,13 @@ func (a *AllProject) firstCreateAndTraverseAst(filesList []string, saveContentFl
 			continue
 		}
 
+		//recv.Interface()表示 创建一个空接口对线保存recv的值
+		//recv.Interface().(FirstWorkChan)表示将空接口对象类型转为FirstWorkChan类型
 		if a.recvWorkChann(recv.Interface().(FirstWorkChan)) {
-			changeFlag = true
+			changeFlag = true //任何一个文件有改变则就将这个标记设为true
 		}
 
+		//如果这个id的goruntine返回时，仍有文件需要去解析，则复用这个协程去处理下一个需要处理的lua文件
 		if recvNum+corNum < len(filesList) {
 			chanRequest := FirstWorkChan{
 				sendRunFlag:     true,
@@ -234,6 +243,8 @@ func (a *AllProject) firstCreateAndTraverseAst(filesList []string, saveContentFl
 			}
 			chs[chosen] <- chanRequest
 		} else {
+			//如果这个id的goruntine返回时，没有文件需要去解析，则将sendRunFlag设为false
+			//GoRoutineFirstWork会将这个id的协程break出协议里的while循环，在if !recvOK {判断时就会认为不需要这个协程了
 			chanRequest := FirstWorkChan{
 				sendRunFlag: false,
 			}

@@ -60,7 +60,7 @@ type InitializeParams struct {
 
 // Initialize lsp初始化函数
 func (l *LspServer) Initialize(ctx context.Context, vs InitializeParams) (lsp.InitializeResult, error) {
-	go func() {
+	go func() { //以并发的方式调用匿名函数func
 		// check_lsp_annotate_complete.go 获取用户的信息比较卡顿，提前获取
 		user.Current()
 	}()
@@ -191,7 +191,7 @@ func (l *LspServer) initialCheckProject(ctx context.Context, checkFlagList []boo
 
 	dirManager.InitOtherDir()
 
-	mainDir := dirManager.GetMainDir()
+	mainDir := dirManager.GetMainDir() //vscode插件里获取的lua主目录
 
 	var checkList []string
 	checkList = dirManager.GetMainDirFileList()
@@ -200,7 +200,7 @@ func (l *LspServer) initialCheckProject(ctx context.Context, checkFlagList []boo
 	checkList = append(checkList, subDirCheckList...)
 
 	clientExpPathList := dirManager.GetPathFileList(dirManager.GetClientExtLuaPath())
-	checkList = append(checkList, clientExpPathList...)
+	// checkList = append(checkList, clientExpPathList...)
 	//var clientExpPathList []string
 
 	// 补全所有的入口文件

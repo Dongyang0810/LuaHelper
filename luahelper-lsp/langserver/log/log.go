@@ -35,6 +35,13 @@ func InitLog(logFlag bool) {
 		return
 	}
 
+	/*
+	   +		log.New接受三个参数：
+	   +		io.Writer：日志都会写到这个Writer中；
+	   +		prefix：前缀，也可以后面调用logger.SetPrefix设置；
+	   +		flag：选项，也可以后面调用logger.SetFlag设置。
+	*/
+
 	debugLog = log.New(io.MultiWriter(fileLog), "Debug ", log.Ldate|log.Lmicroseconds|log.Lshortfile)
 	errorLog = log.New(io.MultiWriter(fileLog), "Error ", log.Ldate|log.Lmicroseconds|log.Lshortfile)
 

@@ -20,6 +20,7 @@ func (l *LspServer) TextDocumentHighlight(ctx context.Context, vs lsp.TextDocume
 		return
 	}
 
+	//拿到这个变量所在文件的文件名、整个文件字符串，光标点击处在整体字符串的偏移等信息
 	comResult := l.beginFileRequest(vs.TextDocument.URI, vs.Position)
 	if !comResult.result {
 		return
@@ -30,6 +31,8 @@ func (l *LspServer) TextDocumentHighlight(ctx context.Context, vs lsp.TextDocume
 	}
 
 	project := l.getAllProject()
+
+	//GetVarStruct根据文件字符串和位置偏移等信息解析出是：光标点击的具体单词，位置，前面是否是冒号，是否有括号等
 	varStruct := check.GetVarStruct(comResult.contents, comResult.offset, comResult.pos.Line, comResult.pos.Character)
 	if !varStruct.ValidFlag {
 		log.Error("TextDocumentHighlight varStruct.ValidFlag not valid")

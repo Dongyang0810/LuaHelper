@@ -15,7 +15,7 @@ func (p *Parser) parseBlock() *ast.Block {
 
 func (p *Parser) parseStats() []ast.Stat {
 	stats := make([]ast.Stat, 0, 1)
-	for !isReturnOrBlockEnd(p.l.LookAheadKind()) {
+	for !isReturnOrBlockEnd(p.l.LookAheadKind()) { //不是return语句 或者 代码块结束
 		stat := p.parseStat()
 		if _, ok := stat.(*ast.EmptyStat); !ok {
 			stats = append(stats, stat)

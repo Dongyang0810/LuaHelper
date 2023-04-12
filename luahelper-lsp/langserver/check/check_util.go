@@ -927,7 +927,7 @@ func GetVarStruct(contents []byte, offset int, line uint32, character uint32) (v
 		str = subStr
 	}
 
-	// 判断最后一个切词是是否为：1为：，-1表示不为
+	// 判断最后一个切词是是否为 "："   ,lastColonFlag=1表示true：，-1表示false
 	lastColonFlag := 0
 
 	// 判断前面是否以冒号开头
