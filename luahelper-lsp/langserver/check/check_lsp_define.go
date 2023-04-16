@@ -166,6 +166,11 @@ func (a *AllProject) findLspReferenceVarDefine(comParam *CommonFuncParam, varStr
 	// 如果是引用，前面的一个切除掉
 	varStruct.StrVec = varStruct.StrVec[1:]
 	// 查找对应的引用信息
+
+	/*
+		require一个相对路径或者import相对路径无法定位到变量的定义，倒是直接import文件名可以定位到
+		TODO:发现是创建refer信息的时候就没有处理好，需要好好看看ast和parse对引用其他文件语句的处理
+	*/
 	referFile := a.GetFirstReferFileResult(referInfo)
 	if referFile == nil {
 		return findPreFile, nil
